@@ -46,8 +46,10 @@ public class OFluxoService {
 		try {
 			final StateMachine<States, Events> stateMachine = getStateMachine(machineId);
 			stateMachine.sendEvent(event);
+			StateMachineContext<States, Events> context = stateMachinePersist.read(machineId);
+			stateMachineService.releaseStateMachine(machineId);
 			stateMachine.stop();
-			return stateMachinePersist.read(machineId);
+			return context;
 		} catch (Exception e) {
 			throw new IllegalArgumentException("State Machine doesn't exist.");
 		}
